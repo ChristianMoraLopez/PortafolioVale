@@ -18,9 +18,7 @@ const Home = () => {
           <p className="text-lg sm:text-xl md:text-2xl text-white text-center max-w-2xl font-lato">
             Transforma tu belleza con un toque único y artístico.
           </p>
-          <button className="mt-8 px-6 py-3 bg-pink-500 text-white text-lg font-semibold rounded-full hover:bg-pink-600 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">
-            Reserva tu sesión
-          </button>
+         
         </div>
       </main>
     </div>
