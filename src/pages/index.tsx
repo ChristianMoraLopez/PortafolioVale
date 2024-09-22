@@ -13,10 +13,10 @@ const Home = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-black opacity-70 z-10" />
           <div className="absolute inset-0 flex flex-col items-center justify-center z-20 px-4 sm:px-6 lg:px-8">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-center mb-4 font-playfair">
-              Beauty & Lens
+             Arte en Piel.
             </h1>
             <p className="text-xl sm:text-2xl md:text-3xl text-center mb-8 font-lato">
-              Maquillaje Profesional y Fotografía
+              Maquillaje Profesional.
             </p>
             <p className="text-lg sm:text-xl md:text-2xl text-center max-w-2xl font-lato mb-12">
               Transforma tu belleza con un toque único y artístico.

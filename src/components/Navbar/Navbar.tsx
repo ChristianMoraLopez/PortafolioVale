@@ -3,7 +3,7 @@ import Icon from '@/components/Icon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import { Brush, Camera, User, Mail, Menu, X, Sun, Moon, LucideIcon } from 'lucide-react';
+import { Brush, Palette, User, Mail, Menu, X, Sun, Moon, LucideIcon } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
 interface NavLinkProps {
@@ -57,10 +57,10 @@ const Navbar: React.FC = () => {
             </span>
           </Link>
           <div className="hidden md:flex items-center space-x-8">
-            <NavLink href="/makeup" text="Maquillaje" icon={Brush} />
-            <NavLink href="/photography" text="Fotografía" icon={Camera} />
-            <NavLink href="/portfolio" text="Portfolio" icon={User} />
-            <NavLink href="/contact" text="Contacto" icon={Mail} />
+          <NavLink href="https://portfolio-make-up.vercel.app/" text="Maquillaje" icon={Brush} />
+          <NavLink href="https://portfolio-make-up.vercel.app/services" text="Servicios" icon={Palette} />
+          <NavLink href="/gallery" text="Portfolio" icon={User} />
+          <NavLink href="/contact" text="Contacto" icon={Mail} />
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors duration-300"
@@ -88,9 +88,9 @@ const Navbar: React.FC = () => {
       {/* Mobile menu */}
       <div className={`md:hidden transition-all duration-300 ease-in-out ${isNavOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-black bg-opacity-90 backdrop-blur-md">
-          <NavLink href="/makeup" text="Maquillaje" icon={Brush} />
-          <NavLink href="/photography" text="Fotografía" icon={Camera} />
-          <NavLink href="/portfolio" text="Portfolio" icon={User} />
+          <NavLink href="https://portfolio-make-up.vercel.app/" text="Maquillaje" icon={Brush} />
+          <NavLink href="https://portfolio-make-up.vercel.app/services" text="Servicios" icon={Palette} />
+          <NavLink href="/gallery" text="Portfolio" icon={User} />
           <NavLink href="/contact" text="Contacto" icon={Mail} />
         </div>
       </div>
