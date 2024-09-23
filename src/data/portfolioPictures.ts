@@ -3,18 +3,18 @@ import { Picture } from '../types/Portfolio';
 export const portfolioPictures: Picture[] = [
 
     {
-        src: '/makeup/makeup1.png',
+        src: 'https://images.pexels.com/photos/28146011/pexels-photo-28146011.png',
         width: 4,
         height: 3,
-        description: 'Maquillaje de novia',
+        description: 'Maquillaje Social',
         date: '2021-08-14',
         location: 'Casa de la novia',
         camera: 'Canon EOS 5D Mark IV',
         model: 'EF 24-70mm f/2.8L II USM',
-        tecnic: 'Natural'
+        tecnic: 'Social'
     },
     {
-        src: '/makeup/makeup2.png',
+        src: 'https://images.pexels.com/photos/28574473/pexels-photo-28574473.jpeg',
         width: 4,
         height: 3,
         description: 'Maquillaje de noche',
@@ -25,7 +25,7 @@ export const portfolioPictures: Picture[] = [
         tecnic: 'Natural'
     },
     {
-        src: '/makeup/makeup3.jpg',
+        src: 'https://images.pexels.com/photos/28146003/pexels-photo-28146003.png',
         width: 4,
         height: 3,
         description: 'Maquillaje de día',
@@ -36,7 +36,7 @@ export const portfolioPictures: Picture[] = [
         tecnic: 'Natural'
     },
     {
-        src: '/makeup/makeup3.png', // Cambié el nombre del archivo
+        src: 'https://images.pexels.com/photos/28575029/pexels-photo-28575029.jpeg', // Cambié el nombre del archivo
         width: 4,
         height: 3,
         description: 'Maquillaje de noche sofisticado',
@@ -44,6 +44,6 @@ export const portfolioPictures: Picture[] = [
         location: 'Salón de belleza',
         camera: 'Canon EOS 5D Mark IV',
         model: 'EF 24-70mm f/2.8L II USM',
-        tecnic: 'Glam'
+        tecnic: 'Natural'
     }
 ];

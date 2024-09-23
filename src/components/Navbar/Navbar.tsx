@@ -52,8 +52,8 @@ const Navbar: React.FC = () => {
         <div className="flex items-center justify-between h-20">
           <Link href="/" passHref>
             <span className="flex-shrink-0 flex items-center">
-              <Image className="h-12 w-auto" src="" alt="Logo" width={48} height={48} />
-              <span className="ml-2 text-2xl font-thin tracking-widest text-black dark:text-white">BEAUTY <span className="text-gold">&</span> LENS</span>
+              <Image className="h-12 w-auto" src="/images/LogoMakeUp.svg" alt="Logo" width={48} height={48} />
+              <span className="ml-2 text-2xl font-thin tracking-widest text-black dark:text-white"> MakeUp <span className="text-gold"></span> Portfolio </span>
             </span>
           </Link>
           <div className="hidden md:flex items-center space-x-8">
