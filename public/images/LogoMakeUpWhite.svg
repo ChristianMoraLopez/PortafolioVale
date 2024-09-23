@@ -19,9 +19,9 @@ viewBox="0 0 391 413"
   <style type="text/css">
    <![CDATA[
     @font-face { font-family:"Monotype Corsiva";font-variant:normal;font-style:italic;font-weight:normal;src:url("#FontID0") format(svg)}
-    .str0 {stroke:#373435;stroke-width:4.3257}
+    .str0 {stroke:#FFFFFF;stroke-width:4.3257}
     .fil1 {fill:none}
-    .fil0 {fill:#373435}
+    .fil0 {fill:#FFFFFF}
     .fnt0 {font-style:italic;font-weight:normal;font-size:274.68px;font-family:'Monotype Corsiva'}
     .fnt1 {font-style:italic;font-weight:normal;font-size:274.682px;font-family:'Monotype Corsiva'}
    ]]>

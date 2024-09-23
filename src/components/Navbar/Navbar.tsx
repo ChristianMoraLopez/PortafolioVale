@@ -30,16 +30,20 @@ const Navbar: React.FC = () => {
     setIsNavOpen(!isNavOpen);
   };
 
+
   const NavLink: React.FC<NavLinkProps> = ({ href, text, icon }) => (
     <Link href={href} passHref>
       <span className={`group flex flex-col items-center px-4 py-2 text-sm font-light tracking-wider ${
         pathname === href
           ? 'text-gold'
-          : 'text-black dark:text-white hover:text-gold'
+          : theme === 'dark' ? 'text-white' : 'text-black hover:text-gold'
       } transition-colors duration-300`}>
-        <Icon icon={icon} className="h-5 w-5 mb-1 group-hover:scale-110 transition-transform duration-300" />
-        <span className="uppercase">{text}</span>
-        <span className={`block h-0.5 w-0 group-hover:w-full transition-all duration-300 ${pathname === href ? 'bg-gold' : 'bg-black dark:bg-white'}`}></span>
+        <Icon icon={icon} className={`h-5 w-5 mb-1 group-hover:scale-110 transition-transform duration-300 ${
+          pathname === href
+            ? 'text-gold'
+            : theme === 'dark' ? 'text-white' : 'text-black'
+        }`} />
+        {text}
       </span>
     </Link>
   );
@@ -50,9 +54,15 @@ const Navbar: React.FC = () => {
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <Link href="/" passHref>
+        <Link href="/" passHref>
             <span className="flex-shrink-0 flex items-center">
-              <Image className="h-12 w-auto" src="/images/LogoMakeUp.svg" alt="Logo" width={48} height={48} />
+              <Image 
+                className="h-12 w-auto" 
+                src={theme === 'dark' ? "/images/LogoMakeUpWhite.svg" : "/images/LogoMakeUpBlackAndWhite.svg"} 
+                alt="Logo" 
+                width={250} 
+                height={250} 
+              />
               <span className="ml-2 text-2xl font-thin tracking-widest text-black dark:text-white"> MakeUp <span className="text-gold"></span> Portfolio </span>
             </span>
           </Link>
