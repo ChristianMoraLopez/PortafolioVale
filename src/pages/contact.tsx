@@ -13,7 +13,7 @@ const ContactPage: React.FC = () => {
   const { theme } = useTheme();
 
   useEffect(() => {
-    emailjs.init("YOUR_USER_ID"); // Reemplaza con tu User ID de EmailJS
+    emailjs.init("Jnf8lO1PjTKXLRo_g"); // Reemplaza con tu User ID de EmailJS
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -142,7 +142,7 @@ const ContactPage: React.FC = () => {
                 href="nailto:mgomezz2003@outlook.com"
                 className="hover:text-gold transition-colors duration-300"
               >
-                mgomezz2003@outlook.com
+                ngomezz2003@outlook.com
               </a>
             </div>
           </motion.div>
