@@ -1,6 +1,6 @@
 import { Asset as ContentfulAsset } from 'contentful';
 
-// Define el tipo adecuado para Link, si es necesario
+// Define el tipo para TagLink
 interface TagLink {
   sys: {
     type: 'Link';
@@ -9,14 +9,64 @@ interface TagLink {
   };
 }
 
-// Extender el tipo Asset de Contentful para incluir metadata
+// Define AssetSys tipo
+export interface AssetSys {
+  space: {
+    sys: {
+      type: 'Link';
+      linkType: 'Space';
+      id: string;
+    };
+  };
+  id: string;
+  type: 'Asset';
+  createdAt: string;
+  updatedAt: string;
+  environment: {
+    sys: {
+      id: string;
+      type: 'Link';
+      linkType: 'Environment';
+    };
+  };
+  revision: number;
+  locale: string;
+}
+
+// Define el tipo para los campos combinados
+export type CombinedFields = {
+  title: string; // Asegúrate de que sea un string, no undefined
+  description?: string;
+  technic?: string; // Solo para AssetFields
+  file: {
+    url: string;
+    contentType: string;
+    details: {
+      size: number;
+      duration?: number; // Esto es opcional para VideoFields
+    };
+  };
+};
+
+// Define ContentItem interface
+export interface ContentItem {
+  category: string;
+  type: 'image' | 'video';
+  metadata: {
+    tags: TagLink[];
+  };
+  sys: AssetSys;
+  fields: CombinedFields; // Usar el nuevo tipo
+}
+
+// Extiende el tipo ContentfulAsset para incluir metadata
 export interface ExtendedAsset extends ContentfulAsset {
   metadata: {
-    tags: TagLink[]; // Cambiado a usar el tipo `TagLink` que incluye las propiedades requeridas
+    tags: TagLink[];
   };
 }
 
-// Definición para los campos de video
+// Define VideoFields tipo
 export type VideoFields = {
   title: string;
   description?: string;
@@ -25,16 +75,16 @@ export type VideoFields = {
     contentType: string;
     details: {
       size: number;
-      duration?: number; 
+      duration?: number;
     };
   };
 };
 
-// Definición para los campos de asset general (imágenes y otros archivos)
+// Define AssetFields tipo
 export type AssetFields = {
   title: string;
   description?: string;
-  technic?: string; 
+  technic?: string;
   file: {
     url: string;
     contentType: string;
@@ -44,32 +94,19 @@ export type AssetFields = {
   };
 };
 
-// Definición para los assets (tanto video como otros tipos)
-export type Asset = {
-  sys: {
-    type: 'Link';
-    linkType: 'Asset';
-    id: string;
-  };
-  fields?: AssetFields | VideoFields; // Campos opcionales
-  metadata: {
-    tags: TagLink[]; // Asegúrate de que `metadata` esté aquí también
-  };
-};
-
-// Definición para el contenido de un párrafo
+// Define ParagraphContent tipo
 export type ParagraphContent = {
-  data: unknown;
+  data: { /* Specific type for data */ };
   content: Array<{
-    data: unknown;
-    marks: string[];
+    data: { /* Specific type for data */ };
+    marks: Array<{ /* Specific type for marks */ }>;
     value: string;
     nodeType: 'text';
   }>;
   nodeType: 'paragraph';
 };
 
-// Definición principal para los datos de Contentful
+// Define ContentfulData tipo
 export type ContentfulData = {
   metadata: {
     tags: string[];
@@ -105,7 +142,7 @@ export type ContentfulData = {
   };
   fields: {
     title: string;
-    images: ExtendedAsset[]; // Cambiado a `ExtendedAsset` para incluir `metadata`
+    images: ExtendedAsset[];
     description: {
       data: unknown;
       content: ParagraphContent[];
@@ -114,8 +151,8 @@ export type ContentfulData = {
     date: string;
     client: string;
     servicesProvided: string;
-    video: ExtendedAsset; // Cambiado a `ExtendedAsset` en lugar de un array
+    video: ExtendedAsset;
     location: string;
-    technic: string; // Asegúrate que esto se use en su contexto adecuado
+    technic: string;
   };
 };

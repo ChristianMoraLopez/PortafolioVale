@@ -27,6 +27,11 @@ const nextConfig = {
           hostname: 'images.ctfassets.net',
         },
 
+        {
+          protocol: 'https',
+          hostname: 'videos.ctfassets.net',
+        },
+
 
 
       ],

@@ -1,20 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Loader } from "lucide-react";
 import Navbar from "@components/Navbar/Navbar";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import useCombinedContentfulData from "@/hooks/useCombinedContentfulData";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ContentItem } from "@/types/PortfolioContentFulTypes";
+
 
 const GalleryPage = () => {
   const { theme } = useTheme();
   const [currentImage, setCurrentImage] = useState<number | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const { combinedData, loading, error } = useCombinedContentfulData();
+  const [isClosing, setIsClosing] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const isVideo = (url: string) => {
+    return url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.ogg');
+  };
 
   const openLightbox = (index: number) => setCurrentImage(index);
-  const closeLightbox = () => setCurrentImage(null);
+  
+  const closeLightbox = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setCurrentImage(null);
+      setIsClosing(false);
+    }, 500);
+  };
+
   const nextImage = () => {
     setCurrentImage((prev) => {
       const currentIndex = prev === null ? 0 : prev;
@@ -30,10 +46,8 @@ const GalleryPage = () => {
   };
 
   const categories = Array.from(
-    new Set(combinedData.map((img) => img.category))
+    new Set(combinedData.map((img: ContentItem) => img.category))
   );
-
-  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -131,48 +145,51 @@ const GalleryPage = () => {
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                     {combinedData
-                      .filter((img) => img.category === category)
-                      .map((image, index) => (
-                        <motion.div
-                          key={index}
-                          className="relative overflow-hidden rounded-2xl shadow-2xl cursor-pointer h-[70vh] group"
-                          whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() =>
-                            openLightbox(
-                              combinedData.findIndex((img) => img === image)
-                            )
-                          }
-                        >
-                          <Image
-                            src={
-                              image.fields?.file?.url
-                                ? `https:${image.fields.file.url}`
-                                : ""
-                            }
-                            alt={
-                              image.fields?.description?.toString() ||
-                              "Image description"
-                            }
-                            layout="fill"
-                            objectFit="cover"
-                            className="transition-transform duration-500 group-hover:scale-110"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-300" />
-                          <div className="absolute bottom-6 left-6 right-6 text-white opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
-                            <p className="text-2xl font-bold mb-2 truncate">
-                              {typeof image.fields?.title === "string"
-                                ? image.fields.title
-                                : "Untitled"}
-                            </p>
-                            <p className="text-lg truncate">
-                              {typeof image.fields?.description === "string"
-                                ? image.fields.description
-                                : "No description"}
-                            </p>
-                          </div>
-                        </motion.div>
-                      ))}
+                      .filter((item: ContentItem) => item.category === category)
+                      .map((item: ContentItem, index: number) => {
+                        const url = item.fields?.file?.url ? `https:${item.fields.file.url}` : "";
+                        return (
+                          <motion.div
+                            key={index}
+                            className="relative overflow-hidden rounded-2xl shadow-2xl cursor-pointer h-[70vh] group"
+                            whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => openLightbox(combinedData.findIndex((img: ContentItem) => img === item))}
+                          >
+                            {isVideo(url) ? (
+                              <video
+                                src={url}
+                                className="w-full h-full object-cover"
+                                controls={false}
+                                muted
+                                loop
+                                playsInline
+                              />
+                            ) : (
+                              <Image
+                                src={url}
+                                alt={item.fields?.description?.toString() || "Image description"}
+                                layout="fill"
+                                objectFit="cover"
+                                className="transition-transform duration-500 group-hover:scale-110"
+                              />
+                            )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-300" />
+                            <div className="absolute bottom-6 left-6 right-6 text-white opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
+                              <p className="text-2xl font-bold mb-2 truncate">
+                                {typeof item.fields?.title === "string"
+                                  ? item.fields.title
+                                  : "Untitled"}
+                              </p>
+                              <p className="text-lg truncate">
+                                {typeof item.fields?.description === "string"
+                                  ? item.fields.description
+                                  : "No description"}
+                              </p>
+                            </div>
+                          </motion.div>
+                        );
+                      })}
                   </div>
                 </motion.div>
               )
@@ -186,6 +203,7 @@ const GalleryPage = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
               className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center"
             >
               <motion.button
@@ -219,19 +237,30 @@ const GalleryPage = () => {
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 className="relative w-[90vw] h-[90vh]"
               >
-                <Image
-                  src={
-                    combinedData[currentImage].fields?.file?.url
-                      ? `https:${combinedData[currentImage].fields.file.url}`
-                      : ""
-                  }
-                  alt={
-                    combinedData[currentImage].fields?.description?.toString() ||
-                    "Default image description"
-                  }
-                  layout="fill"
-                  objectFit="contain"
-                />
+                {isClosing ? (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Loader className="w-16 h-16 text-white animate-spin" />
+                  </div>
+                ) : (
+                  <>
+                    {isVideo(combinedData[currentImage].fields?.file?.url || "") ? (
+                      <video
+                        src={`https:${combinedData[currentImage].fields?.file?.url}`}
+                        className="w-full h-full object-contain"
+                        controls
+                        autoPlay
+                        loop
+                      />
+                    ) : (
+                      <Image
+                        src={`https:${combinedData[currentImage].fields?.file?.url}`}
+                        alt={combinedData[currentImage].fields?.description?.toString() || "Default image description"}
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    )}
+                  </>
+                )}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

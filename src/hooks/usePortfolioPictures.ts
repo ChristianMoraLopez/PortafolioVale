@@ -16,12 +16,17 @@ const useContentfulData = (entryId: string) => {
 
     const fetchData = async () => {
       try {
+        // Obtiene la entrada de Contentful
         const entry: Entry<EntrySkeletonType> = await client.getEntry(entryId, {
-          include: 2, // Aumenta la profundidad de la resolución de links
+          include: 2, // Ajusta el nivel de inclusión si es necesario
         });
+
+        // Imprimir la entrada para verificar su estructura
+        console.log(entry);
 
         if (!entry) throw new Error('No data returned from Contentful');
 
+        // Procesar los datos de Contentful
         const contentfulData: ContentfulData = {
           metadata: {
             tags: entry.metadata?.tags?.map((tag) => tag.sys.id) || [],
