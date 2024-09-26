@@ -22,15 +22,19 @@ const GallerySection = () => {
       {data?.fields.images.map((image, index) => {
         // Accede a los campos de la imagen directamente
         const imageFields = image.fields;
-        
+
         // Asegúrate de que el asset tiene los campos necesarios
         if (!imageFields) {
           console.warn('Asset no resuelto', image);
           return null; // Maneja esto de otra manera si es necesario
         }
 
-        const imageUrl = `https:${imageFields.file.url}`; // Asegúrate de que esto es correcto
-        const imageAlt = imageFields.description || 'Descripción de la imagen';
+        const imageUrl = `https:${imageFields?.file?.url}`; // Asegúrate de que esto es correcto
+
+        // Verifica que 'description' sea un string, de lo contrario usa un valor predeterminado
+        const imageAlt = typeof imageFields.description === 'string'
+          ? imageFields.description
+          : 'Descripción de la imagen';
 
         return (
           <div key={index} className="relative overflow-hidden group">
