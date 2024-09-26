@@ -53,7 +53,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           {...props}
         />
         {visible && tooltipContent && (
-          <div className="absolute z-10 w-32 p-2 text-sm text-white bg-black rounded-md -translate-x-1/2 bottom-full left-1/2 mb-2">
+          <div className="absolute z-10 w-32 p-2 text-sm text-white bg-black rounded-md -translate-x-1/2 bottom-full left-1/2 mb-2 ">
             {tooltipContent}
           </div>
         )}

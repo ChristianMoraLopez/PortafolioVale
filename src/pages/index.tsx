@@ -7,9 +7,9 @@ import { ThemeProvider } from '@/context/ThemeContext';
 const Home = () => {
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white transition-colors duration-300">
+      <div className="min-h-screen flex flex-col bg-white dark:bg-black text-black dark:text-white transition-colors duration-300">
         <Navbar />
-        <main className="relative min-h-screen pt-20"> {/* Add pt-20 for navbar space */}
+        <main className="flex-grow relative pt-20">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-black opacity-70 z-10" />
           <div className="relative z-20 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-center mb-4 font-playfair">
@@ -30,6 +30,19 @@ const Home = () => {
             </Link>
           </div>
         </main>
+        <footer className="py-3 text-center text-xs font-light text-gray-500 dark:text-gray-400 bg-transparent">
+          <p>
+            Diseñado por{' '}
+            <a 
+              href="https://www.linkedin.com/in/christian-moral" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-300"
+            >
+              Christian Mora
+            </a>
+          </p>
+        </footer>
       </div>
     </ThemeProvider>
   );
