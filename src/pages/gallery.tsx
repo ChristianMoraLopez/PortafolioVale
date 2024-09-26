@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import useCombinedContentfulData from "@/hooks/useCombinedContentfulData";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -62,38 +62,61 @@ const GalleryPage: React.FC = () => {
   }
 
   return (
-    <div className={`min-h-screen ${theme === "dark" ? "bg-gradient-to-b from-gray-900 to-gray-800" : "bg-gradient-to-b from-gray-50 to-white"} text-gray-900 dark:text-white`}>
+    <div className={`min-h-screen ${theme === "dark" ? "bg-gradient-to-b from-black via-blue-950 to-gray-900" : "bg-gradient-to-b from-gray-50 to-white"} text-gray-900 dark:text-gray-100 transition-colors duration-500`}>
       <Navbar />
       <div className="container mx-auto px-4 py-20">
-        <motion.h1
-          className="text-6xl font-extrabold mb-12 text-center tracking-tight leading-none"
-          initial={{ opacity: 0, y: -50 }}
+        <AnimatePresence>
+          <motion.h1
+            className="text-6xl font-bold mb-16 text-center tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-r from-gray-700 to-gray-900 dark:from-gray-300 dark:to-white hidden md:block"
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+          >
+            Galería de Maquillaje
+          </motion.h1>
+        </AnimatePresence>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mb-12"
         >
-          Galería de Maquillaje
-        </motion.h1>
+          <CategoryFilter
+            categories={categories}
+            activeCategory={activeCategory}
+            setActiveCategory={setActiveCategory}
+            isScrolled={isScrolled}
+            theme={theme}
+          />
+        </motion.div>
 
-        <CategoryFilter
-          categories={categories}
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
-          isScrolled={isScrolled}
-          theme={theme}
-        />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mb-12"
+        >
+          <MediaTypeFilter
+            activeMediaType={activeMediaType}
+            setActiveMediaType={setActiveMediaType}
+            theme={theme}
+          />
+        </motion.div>
 
-        <MediaTypeFilter
-          activeMediaType={activeMediaType}
-          setActiveMediaType={setActiveMediaType}
-          theme={theme}
-        />
-
-        <GalleryGrid
-          filteredData={filteredData}
-          loading={loading}
-          openLightbox={openLightbox}
-          theme={theme}
-        />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.6 }}
+        >
+          <GalleryGrid
+            filteredData={filteredData}
+            loading={loading}
+            openLightbox={openLightbox}
+            theme={theme}
+          />
+        </motion.div>
 
         <Lightbox
           currentImage={currentImage}

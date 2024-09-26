@@ -19,8 +19,8 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   return (
     <motion.div
       className={`flex justify-center mb-8 flex-wrap sticky top-0 z-10 py-6 ${
-        isScrolled ? "bg-opacity-95 backdrop-blur-lg shadow-xl" : ""
-      } ${theme === "dark" ? "bg-gray-900" : "bg-white"} transition-all duration-300`}
+        isScrolled ? "backdrop-blur-lg shadow-xl" : ""
+      } transition-all duration-300`}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
@@ -30,8 +30,8 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
           !activeCategory
             ? `${theme === "dark" ? "bg-white text-gray-900" : "bg-gray-900 text-white"} shadow-lg hover:shadow-2xl transform hover:-translate-y-1`
             : theme === "dark"
-            ? "bg-gray-800 text-white hover:bg-gray-700"
-            : "bg-gray-200 text-gray-900 hover:bg-gray-300"
+            ? "text-white hover:bg-gray-700"
+            : "text-gray-900 hover:bg-gray-300"
         }`}
         onClick={() => setActiveCategory(null)}
       >
@@ -44,8 +44,8 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
             activeCategory === category
               ? `${theme === "dark" ? "bg-white text-gray-900" : "bg-gray-900 text-white"} shadow-lg hover:shadow-2xl transform hover:-translate-y-1`
               : theme === "dark"
-              ? "bg-gray-800 text-white hover:bg-gray-700"
-              : "bg-gray-200 text-gray-900 hover:bg-gray-300"
+              ? "text-white hover:bg-gray-700"
+              : "text-gray-900 hover:bg-gray-300"
           }`}
           onClick={() => setActiveCategory(category)}
         >
