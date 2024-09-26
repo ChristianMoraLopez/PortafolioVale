@@ -24,8 +24,11 @@ const nextConfig = {
         },
         {
           protocol: 'https',
-          hostname: 'previews.dropbox.com',
+          hostname: 'images.ctfassets.net',
         },
+
+
+
       ],
     },
   };
