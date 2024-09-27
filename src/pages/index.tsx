@@ -3,47 +3,67 @@ import Link from 'next/link';
 import Navbar from '../components/Navbar/Navbar';
 import GallerySection from '@components/Gallery/GallerySection';
 import { ThemeProvider } from '@/context/ThemeContext';
+import { motion } from 'framer-motion';
 
 const Home = () => {
   return (
     <ThemeProvider>
-      <div className="min-h-screen flex flex-col bg-white dark:bg-black text-black dark:text-white transition-colors duration-300">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-200 dark:from-gray-900 dark:to-black text-gray-800 dark:text-gray-200 transition-all duration-500 ease-in-out"
+      >
         <Navbar />
-        <main className="flex-grow relative pt-20">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-black opacity-70 z-10" />
-          <div className="relative z-20 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-center mb-4 font-playfair">
-              Arte en Piel
-            </h1>
-            <p className="text-xl sm:text-2xl md:text-3xl text-center mb-8 font-lato">
-              Maquillaje Profesional
-            </p>
-            <p className="text-lg sm:text-xl md:text-2xl text-center max-w-2xl font-lato mb-12">
-              Transforma tu belleza con un toque único y artístico.
-            </p>
+        <main className="flex-grow relative pt-36 sm:pt-32 md:pt-40 px-6 sm:px-10 lg:px-16">
+          <div className="relative z-20 max-w-7xl mx-auto">
             <GallerySection />
-            <Link
-              href="/gallery"
-              className="mt-8 px-6 py-3 bg-black dark:bg-white text-white dark:text-black text-lg font-semibold rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-300"
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              className="mt-16 sm:mt-24 md:mt-32"
             >
-              Ver más
-            </Link>
+              <Link
+                href="/gallery"
+                className="block w-max mx-auto px-10 sm:px-12 md:px-16 py-5 sm:py-6 md:py-7 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 text-base sm:text-lg md:text-xl font-bold rounded-full hover:bg-gray-700 dark:hover:bg-gray-300 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl relative overflow-hidden group"
+              >
+                <span className="relative z-10">Explorar Colección</span>
+                <motion.span 
+                  className="absolute inset-0 bg-gradient-to-r from-gray-700 to-gray-900 dark:from-gray-300 dark:to-gray-100 opacity-0 group-hover:opacity-50 transition-opacity duration-300"
+                  initial={{ x: '-100%' }}
+                  whileHover={{ x: '100%' }}
+                  transition={{ duration: 0.5 }}
+                />
+              </Link>
+            </motion.div>
           </div>
         </main>
-        <footer className="py-3 text-center text-xs font-light text-gray-500 dark:text-gray-400 bg-transparent">
-          <p>
-            Diseñado por{' '}
-            <a 
-              href="https://www.linkedin.com/in/christian-moral" 
-              target="_blank" 
+        <footer className="py-10 sm:py-12 text-center text-sm sm:text-base font-medium text-gray-600 dark:text-gray-400 bg-gradient-to-t from-gray-200 to-transparent dark:from-gray-800 dark:to-transparent mt-auto">
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.5 }}
+            className="max-w-2xl mx-auto px-6"
+          >
+            Diseñado con pasión por{' '}
+            <a
+              href="https://www.linkedin.com/in/christian-moral"
+              target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-300"
+              className="relative inline-block group"
             >
-              Christian Mora
+              <span className="relative z-10 font-bold">Christian Mora</span>
+              <motion.span 
+                className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-gray-600 to-gray-800 dark:from-gray-400 dark:to-gray-200"
+                initial={{ scaleX: 0 }}
+                whileHover={{ scaleX: 1 }}
+                transition={{ duration: 0.3 }}
+              />
             </a>
-          </p>
+          </motion.p>
         </footer>
-      </div>
+      </motion.div>
     </ThemeProvider>
   );
 };

@@ -15,21 +15,32 @@ interface NavLinkProps {
 const Navbar: React.FC = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [prevScrollPos, setPrevScrollPos] = useState(0);
+  const [visible, setVisible] = useState(true);
   const { pathname } = useRouter();
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      const currentScrollPos = window.pageYOffset;
+      setIsScrolled(currentScrollPos > 10);
+
+      if (window.innerWidth <= 768) { // Only for mobile devices
+        const isVisible = prevScrollPos > currentScrollPos || currentScrollPos < 10;
+        setVisible(isVisible);
+        setPrevScrollPos(currentScrollPos);
+      } else {
+        setVisible(true); // Always visible on desktop
+      }
     };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [prevScrollPos]);
 
   const toggleNav = () => {
     setIsNavOpen(!isNavOpen);
   };
-
 
   const NavLink: React.FC<NavLinkProps> = ({ href, text, icon }) => (
     <Link href={href} passHref>
@@ -51,10 +62,10 @@ const Navbar: React.FC = () => {
   return (
     <nav className={`fixed w-full z-50 transition-all duration-500 ease-in-out ${
       isScrolled ? 'bg-white dark:bg-black bg-opacity-80 backdrop-blur-md' : 'bg-transparent'
-    }`}>
+    } ${visible ? 'top-0' : '-top-20'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-        <Link href="/" passHref>
+          <Link href="/" passHref>
             <span className="flex-shrink-0 flex items-center">
               <Image 
                 className="h-12 w-auto" 
@@ -67,10 +78,10 @@ const Navbar: React.FC = () => {
             </span>
           </Link>
           <div className="hidden md:flex items-center space-x-8">
-          <NavLink href="https://portfolio-make-up.vercel.app/" text="Maquillaje" icon={Brush} />
-          <NavLink href="https://portfolio-make-up.vercel.app/services" text="Servicios" icon={Palette} />
-          <NavLink href="/gallery" text="Portfolio" icon={User} />
-          <NavLink href="/contact" text="Contacto" icon={Mail} />
+            <NavLink href="https://portfolio-make-up.vercel.app/" text="Maquillaje" icon={Brush} />
+            <NavLink href="https://portfolio-make-up.vercel.app/services" text="Servicios" icon={Palette} />
+            <NavLink href="/gallery" text="Portfolio" icon={User} />
+            <NavLink href="/contact" text="Contacto" icon={Mail} />
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors duration-300"
