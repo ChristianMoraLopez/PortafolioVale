@@ -34,7 +34,7 @@ const TransparentWaterEffect: React.FC = () => {
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
         texture.repeat.set(4, 4);
       }),
-      sunDirection: new THREE.Vector3(0, 1, 0),
+      sunDirection: new THREE.Vector3(50, 20, 50),
       sunColor: 0xffffff,
       waterColor: 0x001e0f,
       distortionScale: 3.7,
@@ -71,14 +71,15 @@ const TransparentWaterEffect: React.FC = () => {
 
     // Fade in effect
     const fadeIn = () => {
-      setOpacity((prevOpacity) => {
-        if (prevOpacity < 1) {
-          requestAnimationFrame(fadeIn);
-          return prevOpacity + 0.02;
-        }
-        return prevOpacity;
-      });
-    };
+        setOpacity((prevOpacity) => {
+          if (prevOpacity < 1) {
+            requestAnimationFrame(fadeIn);
+            return Math.min(prevOpacity + 0.02, 1); // Limitar la opacidad a 1
+          }
+          return prevOpacity;
+        });
+      };
+      
     fadeIn();
 
     // Interaction
