@@ -4,7 +4,6 @@ import Navbar from '../components/Navbar/Navbar';
 import GallerySection from '@components/Gallery/GallerySection';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { motion } from 'framer-motion';
-import TransparentWaterEffect from '@/components/3D/mirror3D';
 
 const Home = () => {
   return (
@@ -40,7 +39,6 @@ const Home = () => {
             </motion.div>
           </div>
         </main>
-          <TransparentWaterEffect />
         <footer className="py-10 sm:py-12 text-center  text-sm sm:text-base font-medium text-gray-600 dark:text-gray-400 bg-gradient-to-t from-gray-200 to-transparent dark:from-gray-800 dark:to-transparent mt-auto">
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
