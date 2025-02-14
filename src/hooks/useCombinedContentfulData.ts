@@ -51,19 +51,19 @@ const useCombinedContentfulData = (): {
   
 // Manejar los datos de video si están disponibles
 const handleVideoData = (data: ContentfulData) => {
-  if (data?.fields.video) {
+  if (data?.fields.videos) {
     combinedData.push({
-      ...data.fields.video,
+      ...data.fields.videos,
       category: data.fields.technic || "Uncategorized",
       type: "video" as const,
       sys: {
-        ...data.fields.video.sys,
-        locale: data.fields.video.sys.locale || "en-US", // Ensuring locale is not undefined
+        ...data.fields.videos.sys,
+        locale: data.fields.videos.sys.locale || "en-US", // Ensuring locale is not undefined
       } as AssetSys,
       fields: {
-        title: data.fields.video.fields.title, // Title must be a string
-        description: data.fields.video.fields.description || "", // Ensure description is a string
-        file: data.fields.video.fields.file
+        title: data.fields.videos.fields.title, // Title must be a string
+        description: data.fields.videos.fields.description || "", // Ensure description is a string
+        file: data.fields.videos.fields.file
       } as CombinedFields, // Ensure the structure matches CombinedFields
     });
   }
