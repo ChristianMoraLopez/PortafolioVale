@@ -52,23 +52,26 @@ const useCombinedContentfulData = (): {
 // Manejar los datos de video si están disponibles
 const handleVideoData = (data: ContentfulData) => {
   if (data?.fields.videos) {
-    combinedData.push({
-      ...data.fields.videos,
+    // Usar map para manejar múltiples videos
+    const videoItems = data.fields.videos.map((video) => ({
+      ...video,
       category: data.fields.technic || "Uncategorized",
       type: "video" as const,
       sys: {
-        ...data.fields.videos.sys,
-        locale: data.fields.videos.sys.locale || "en-US", // Ensuring locale is not undefined
+        ...video.sys,
+        locale: video.sys.locale || "en-US",
       } as AssetSys,
       fields: {
-        title: data.fields.videos.fields.title, // Title must be a string
-        description: data.fields.videos.fields.description || "", // Ensure description is a string
-        file: data.fields.videos.fields.file
-      } as CombinedFields, // Ensure the structure matches CombinedFields
-    });
+        title: video.fields.title,
+        description: video.fields.description || "",
+        file: video.fields.file
+      } as CombinedFields,
+    }));
+    
+    // Agregar todos los videos al combinedData
+    combinedData.push(...videoItems);
   }
 };
-
 
   handleVideoData(firstData!);
   handleVideoData(secondData!);

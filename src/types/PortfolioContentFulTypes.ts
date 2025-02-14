@@ -151,7 +151,7 @@ export type ContentfulData = {
     date: string;
     client: string;
     servicesProvided: string;
-    videos: ExtendedAsset;
+    videos: ExtendedAsset[];
     location: string;
     technic: string;
   };
