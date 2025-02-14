@@ -51,9 +51,9 @@ const useCombinedContentfulData = (): {
   
 // Manejar los datos de video si están disponibles
 const handleVideoData = (data: ContentfulData) => {
-  if (data?.fields.videos) {
-    // Usar map para manejar múltiples videos
-    const videoItems = data.fields.videos.map((video) => ({
+  if (data?.fields?.videos && Array.isArray(data.fields.videos)) {
+    console.log("Processing videos:", data.fields.videos); // Para debug
+    const videoItems = data.fields.videos.map((video: ExtendedAsset) => ({
       ...video,
       category: data.fields.technic || "Uncategorized",
       type: "video" as const,
@@ -64,11 +64,12 @@ const handleVideoData = (data: ContentfulData) => {
       fields: {
         title: video.fields.title,
         description: video.fields.description || "",
-        file: video.fields.file
+        file: video.fields.file,
+        contentType: video.fields.file?.contentType // Asegúrate de que esto existe
       } as CombinedFields,
     }));
     
-    // Agregar todos los videos al combinedData
+    console.log("Processed video items:", videoItems); // Para debug
     combinedData.push(...videoItems);
   }
 };
