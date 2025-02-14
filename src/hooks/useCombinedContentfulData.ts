@@ -1,7 +1,7 @@
 import useContentfulData from "@/hooks/usePortfolioPictures";
 import { ContentItem, ExtendedAsset } from "@/types/PortfolioContentFulTypes"; // Ensure correct paths
 import { AssetFields, AssetSys, VideoFields, ContentfulData, CombinedFields } from "@/types/PortfolioContentFulTypes";
-import { useEffect } from "react";
+
 
 
 const useCombinedContentfulData = (): {
@@ -20,12 +20,6 @@ const useCombinedContentfulData = (): {
     error: secondError,
   } = useContentfulData("1aFPiWEyvcq0amHhH6SXvq");
 
-  useEffect(() => {
-    if (secondData) {
-      console.log("First Entry Data:", firstData);
-      console.log("Videos in first entry:", secondData.fields.videos);
-    }
-  }, [secondData]);
 
   const combinedData: ContentItem[] = [
     ...(firstData?.fields.images || []).map((img: ExtendedAsset): ContentItem => ({
