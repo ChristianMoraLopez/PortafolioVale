@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
-import useCombinedContentfulData from "@/hooks/useCombinedContentfulData";
+import useContentfulData from "@/hooks/useCombinedContentfulData";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ContentItem } from "@/types/PortfolioContentFulTypes";
 import Navbar from "@components/Navbar/Navbar";
@@ -15,7 +15,7 @@ const GalleryPage: React.FC = () => {
   const [currentImage, setCurrentImage] = useState<number | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [activeMediaType, setActiveMediaType] = useState<"all" | "images" | "videos">("all");
-  const { combinedData, loading, error } = useCombinedContentfulData();
+  const { portfolioData, loading, error } = useContentfulData();
   const [isClosing, setIsClosing] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -27,21 +27,23 @@ const GalleryPage: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const categories = Array.from(
-    new Set(combinedData.map((img: ContentItem) => img.category))
-  );
+  const categories = loading || !portfolioData 
+    ? [] 
+    : Array.from(new Set(portfolioData.gallery.map((img: ContentItem) => img.category)));
 
   const isVideo = (url: string) => {
     return url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.ogg');
   };
 
-  const filteredData = combinedData.filter((item: ContentItem) => {
-    const matchesCategory = !activeCategory || item.category === activeCategory;
-    const matchesMediaType = activeMediaType === "all" ||
-      (activeMediaType === "videos" && isVideo(item.fields?.file?.url || "")) ||
-      (activeMediaType === "images" && !isVideo(item.fields?.file?.url || ""));
-    return matchesCategory && matchesMediaType;
-  });
+  const filteredData = loading || !portfolioData 
+    ? [] 
+    : portfolioData.gallery.filter((item: ContentItem) => {
+        const matchesCategory = !activeCategory || item.category === activeCategory;
+        const matchesMediaType = activeMediaType === "all" ||
+          (activeMediaType === "videos" && isVideo(item.fields?.file?.url || "")) ||
+          (activeMediaType === "images" && !isVideo(item.fields?.file?.url || ""));
+        return matchesCategory && matchesMediaType;
+      });
 
   const openLightbox = (index: number) => setCurrentImage(index);
   
