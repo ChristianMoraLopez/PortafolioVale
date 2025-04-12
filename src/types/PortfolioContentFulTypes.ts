@@ -1,3 +1,4 @@
+// types/PortfolioContentFulTypes.ts
 import { Asset as ContentfulAsset } from 'contentful';
 
 // Define el tipo para TagLink
@@ -35,15 +36,15 @@ export interface AssetSys {
 
 // Define el tipo para los campos combinados
 export type CombinedFields = {
-  title: string; // Asegúrate de que sea un string, no undefined
+  title: string;
   description?: string;
-  technic?: string; // Solo para AssetFields
+  technic?: string;
   file: {
     url: string;
     contentType: string;
     details: {
       size: number;
-      duration?: number; // Esto es opcional para VideoFields
+      duration?: number;
     };
   };
 };
@@ -56,7 +57,7 @@ export interface ContentItem {
     tags: TagLink[];
   };
   sys: AssetSys;
-  fields: CombinedFields; // Usar el nuevo tipo
+  fields: CombinedFields;
 }
 
 // Extiende el tipo ContentfulAsset para incluir metadata
@@ -96,10 +97,10 @@ export type AssetFields = {
 
 // Define ParagraphContent tipo
 export type ParagraphContent = {
-  data: { /* Specific type for data */ };
+  data: {};
   content: Array<{
-    data: { /* Specific type for data */ };
-    marks: Array<{ /* Specific type for marks */ }>;
+    data: {};
+    marks: Array<{}>;
     value: string;
     nodeType: 'text';
   }>;
