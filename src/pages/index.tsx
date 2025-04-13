@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import useContentfulData from "@/hooks/useCombinedContentfulData";
-import { ContentItem } from "@/types/PortfolioContentFulTypes";
 import Navbar from "@components/Navbar/Navbar";
 import Image from "next/image";
 import Slider from "react-slick";

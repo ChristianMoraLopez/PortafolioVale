@@ -49,15 +49,54 @@ export type CombinedFields = {
   };
 };
 
-// Define ContentItem interface
+// Define ContentItem tipo
 export interface ContentItem {
   category: string;
   type: 'image' | 'video';
   metadata: {
-    tags: TagLink[];
+    tags: Array<{
+      sys: {
+        type: 'Link';
+        linkType: 'Tag';
+        id: string;
+      };
+    }>;
   };
-  sys: AssetSys;
-  fields: CombinedFields;
+  sys: {
+    id: string;
+    type: 'Asset';
+    createdAt: string;
+    updatedAt: string;
+    locale: string;
+    space: {
+      sys: {
+        type: 'Link';
+        linkType: 'Space';
+        id: string;
+      };
+    };
+    environment: {
+      sys: {
+        type: 'Link';
+        linkType: 'Environment';
+        id: string;
+      };
+    };
+    revision: number;
+  };
+  fields: {
+    title: string;
+    description: string;
+    technic?: string;
+    file: {
+      url: string;
+      contentType: string;
+      details: {
+        size: number;
+        duration?: number;
+      };
+    };
+  };
 }
 
 // Extiende el tipo ContentfulAsset para incluir metadata
@@ -97,34 +136,65 @@ export type AssetFields = {
 
 // Define ParagraphContent tipo
 export type ParagraphContent = {
-  data: {};
+  data: Record<string, never>;
   content: Array<{
-    data: {};
-    marks: Array<{}>;
+    data: Record<string, never>;
+    marks: Array<Record<string, never>>;
     value: string;
     nodeType: 'text';
   }>;
   nodeType: 'paragraph';
 };
 
+// Define ContentfulSpace tipo
+interface ContentfulSpace {
+  sys: {
+    type: 'Link';
+    linkType: 'Space';
+    id: string;
+  };
+}
+
+// Define ContentfulEnvironment tipo
+interface ContentfulEnvironment {
+  sys: {
+    type: 'Link';
+    linkType: 'Environment';
+    id: string;
+  };
+}
+
+// Define ContentfulContentType tipo
+interface ContentfulContentType {
+  sys: {
+    type: 'Link';
+    linkType: 'ContentType';
+    id: string;
+  };
+}
+
 // Define ContentfulData tipo
 export interface ContentfulData {
-  initialPortfolio: {
-    heroImage: ContentItem | null;
-    backgroundVideo: ContentItem | null;
-    title: string;
-    description: string;
-    technic: string;
-    images: ContentItem[];
-    videos: ContentItem[];
+  metadata: {
+    tags: string[];
   };
-  gallery: ContentItem[];
-  serviceCategories: ServiceCategory[];
-  services: {
-    artistic: ContentItem[];
-    social: ContentItem[];
-    bodypaint: ContentItem[];
-    editorial: ContentItem[];
+  sys: {
+    space: ContentfulSpace;
+    id: string;
+    type: string;
+    createdAt: string;
+    updatedAt: string;
+    environment: ContentfulEnvironment;
+    revision: number;
+    contentType: ContentfulContentType;
+    locale: string;
+  };
+  fields: {
+    images?: ContentItem[];
+    videos?: ContentItem[];
+    title?: string;
+    description?: string;
+    technic?: string;
   };
 }
 
@@ -133,4 +203,24 @@ export interface ServiceCategory {
   title: string;
   description: string;
   thumbnail: ContentItem | null;
+}
+
+export interface PortfolioData {
+  gallery: ContentItem[];
+  initialPortfolio: {
+    heroImage: ContentItem | null;
+    backgroundVideo: ContentItem | null;
+    services: {
+      artistic: ContentItem[];
+      social: ContentItem[];
+      bodypaint: ContentItem[];
+      editorial: ContentItem[];
+    };
+  };
+  serviceCategories: {
+    id: string;
+    title: string;
+    description: string;
+    thumbnail: ContentItem | null;
+  }[];
 }

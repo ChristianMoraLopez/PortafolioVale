@@ -1,7 +1,7 @@
 // hooks/useContentfulData.ts
 import { useState, useEffect } from 'react';
-import { createClient, EntryCollection } from 'contentful';
-import { ContentfulData, ParagraphContent, ContentItem } from '@/types/PortfolioContentFulTypes';
+import { createClient, EntryCollection, EntrySkeletonType } from 'contentful';
+import { ContentItem } from '@/types/PortfolioContentFulTypes';
 
 // Helper function to format URLs
 const formatContentfulUrl = (url: string): string => {
@@ -34,6 +34,96 @@ interface PortfolioData {
   }[];
 }
 
+interface AssetFields {
+  title?: string;
+  description?: string;
+  file?: {
+    url: string;
+    contentType: string;
+    details: {
+      size: number;
+      duration?: number;
+    };
+  };
+}
+
+interface PortfolioFields {
+  title?: string;
+  technic?: string;
+  images?: ContentfulAsset[];
+  videos?: ContentfulAsset[];
+}
+
+interface ContentfulSpace {
+  sys: {
+    type: "Link";
+    linkType: "Space";
+    id: string;
+  };
+}
+
+interface ContentfulEnvironment {
+  sys: {
+    type: "Link";
+    linkType: "Environment";
+    id: string;
+  };
+}
+
+interface ContentfulContentType {
+  sys: {
+    type: "Link";
+    linkType: "ContentType";
+    id: string;
+  };
+}
+
+interface ContentfulEntry extends EntrySkeletonType<PortfolioFields> {
+  sys: {
+    id: string;
+    type: "Entry";
+    createdAt: string;
+    updatedAt: string;
+    locale: string;
+    space: ContentfulSpace;
+    environment: ContentfulEnvironment;
+    revision: number;
+    contentType: ContentfulContentType;
+  };
+  metadata?: {
+    tags: Array<{
+      sys: {
+        type: "Link";
+        linkType: "Tag";
+        id: string;
+      };
+    }>;
+  };
+}
+
+interface ContentfulAsset extends EntrySkeletonType<AssetFields> {
+  sys: {
+    id: string;
+    type: "Asset";
+    createdAt: string;
+    updatedAt: string;
+    locale: string;
+    space: ContentfulSpace;
+    environment: ContentfulEnvironment;
+    revision: number;
+  };
+  fields: AssetFields;
+  metadata?: {
+    tags: Array<{
+      sys: {
+        type: "Link";
+        linkType: "Tag";
+        id: string;
+      };
+    }>;
+  };
+}
+
 const useContentfulData = () => {
   const [portfolioData, setPortfolioData] = useState<PortfolioData>(() => {
     const initialPortfolioData: PortfolioData = {
@@ -64,7 +154,7 @@ const useContentfulData = () => {
 
     const fetchData = async () => {
       try {
-        const entries: EntryCollection<any> = await client.getEntries({
+        const entries: EntryCollection<ContentfulEntry> = await client.getEntries({
           content_type: 'portfolio',
           include: 2,
         });
@@ -81,44 +171,64 @@ const useContentfulData = () => {
 
         console.log('Initial portfolio entry found:', initialPortfolioEntry ? 'Yes' : 'No');
         if (initialPortfolioEntry) {
-          const entryImages = initialPortfolioEntry.fields.images as any[] | undefined;
-          const entryVideos = initialPortfolioEntry.fields.videos as any[] | undefined;
-          console.log('Initial portfolio entry images:', entryImages?.map((img: any) => img.sys.id));
-          console.log('Initial portfolio entry videos:', entryVideos?.map((vid: any) => vid.sys.id));
+          const images = (initialPortfolioEntry.fields.images || []) as ContentfulAsset[];
+          const videos = (initialPortfolioEntry.fields.videos || []) as ContentfulAsset[];
+          console.log('Initial portfolio entry images:', images.map(img => img.sys.id));
+          console.log('Initial portfolio entry videos:', videos.map(vid => vid.sys.id));
         }
 
         // Transform gallery entries
         const galleryData: ContentItem[] = galleryEntries.flatMap(entry => {
           const items: ContentItem[] = [];
           
-          const entryImages = entry.fields.images as any[] | undefined;
-          const entryVideos = entry.fields.videos as any[] | undefined;
-          
           // Add images
-          if (entryImages && entryImages.length > 0) {
-            items.push(...entryImages.map(img => {
+          if (entry.fields.images && Array.isArray(entry.fields.images) && entry.fields.images.length > 0) {
+            items.push(...(entry.fields.images as ContentfulAsset[]).map(img => {
               const title = typeof img.fields.title === 'string' ? img.fields.title : '';
               const description = typeof img.fields.description === 'string' ? img.fields.description : '';
               const fileUrl = typeof img.fields.file?.url === 'string' 
                 ? formatContentfulUrl(img.fields.file.url)
                 : '';
               const contentType = typeof img.fields.file?.contentType === 'string' ? img.fields.file.contentType : '';
-              const details = img.fields.file?.details as any;
+              const details = img.fields.file?.details;
               const size = typeof details?.size === 'number' ? details.size : 0;
               const duration = typeof details?.duration === 'number' ? details.duration : undefined;
 
               return {
-                category: typeof entry.fields.title === 'string' ? entry.fields.title : '',
+                category: (entry.fields.title || '') as string,
                 type: 'image' as const,
-                metadata: img.metadata,
+                metadata: {
+                  tags: img.metadata?.tags?.map((tag: { sys: { id: string } }) => ({
+                    sys: {
+                      type: "Link" as const,
+                      linkType: "Tag" as const,
+                      id: tag.sys.id
+                    }
+                  })) || []
+                },
                 sys: {
                   ...img.sys,
-                  locale: img.sys.locale || 'en-US'
+                  type: "Asset" as const,
+                  locale: img.sys.locale || 'en-US',
+                  space: {
+                    sys: {
+                      type: "Link" as const,
+                      linkType: "Space" as const,
+                      id: img.sys.space.sys.id
+                    }
+                  },
+                  environment: {
+                    sys: {
+                      type: "Link" as const,
+                      linkType: "Environment" as const,
+                      id: img.sys.environment.sys.id
+                    }
+                  }
                 },
                 fields: {
                   title,
                   description,
-                  technic: typeof entry.fields.technic === 'string' ? entry.fields.technic : undefined,
+                  technic: typeof (entry.fields as { technic?: string }).technic === 'string' ? (entry.fields as { technic?: string }).technic : undefined,
                   file: {
                     url: fileUrl,
                     contentType,
@@ -133,30 +243,53 @@ const useContentfulData = () => {
           }
           
           // Add videos
-          if (entryVideos && entryVideos.length > 0) {
-            items.push(...entryVideos.map(vid => {
+          if (entry.fields.videos && Array.isArray(entry.fields.videos) && entry.fields.videos.length > 0) {
+            items.push(...entry.fields.videos.map(vid => {
               const title = typeof vid.fields.title === 'string' ? vid.fields.title : '';
               const description = typeof vid.fields.description === 'string' ? vid.fields.description : '';
               const fileUrl = typeof vid.fields.file?.url === 'string' 
                 ? formatContentfulUrl(vid.fields.file.url)
                 : '';
               const contentType = typeof vid.fields.file?.contentType === 'string' ? vid.fields.file.contentType : '';
-              const details = vid.fields.file?.details as any;
+              const details = vid.fields.file?.details;
               const size = typeof details?.size === 'number' ? details.size : 0;
               const duration = typeof details?.duration === 'number' ? details.duration : undefined;
 
               return {
-                category: typeof entry.fields.title === 'string' ? entry.fields.title : '',
+                category: (entry.fields.title || '') as string,
                 type: 'video' as const,
-                metadata: vid.metadata,
+                metadata: {
+                  tags: vid.metadata?.tags?.map((tag: { sys: { id: string } }) => ({
+                    sys: {
+                      type: "Link" as const,
+                      linkType: "Tag" as const,
+                      id: tag.sys.id
+                    }
+                  })) || []
+                },
                 sys: {
                   ...vid.sys,
-                  locale: vid.sys.locale || 'en-US'
+                  type: "Asset" as const,
+                  locale: vid.sys.locale || 'en-US',
+                  space: {
+                    sys: {
+                      type: "Link" as const,
+                      linkType: "Space" as const,
+                      id: vid.sys.space.sys.id
+                    }
+                  },
+                  environment: {
+                    sys: {
+                      type: "Link" as const,
+                      linkType: "Environment" as const,
+                      id: vid.sys.environment.sys.id
+                    }
+                  }
                 },
                 fields: {
                   title,
                   description,
-                  technic: typeof entry.fields.technic === 'string' ? entry.fields.technic : undefined,
+                  technic: typeof (entry.fields as { technic?: string }).technic === 'string' ? (entry.fields as { technic?: string }).technic : undefined,
                   file: {
                     url: fileUrl,
                     contentType,
@@ -174,7 +307,7 @@ const useContentfulData = () => {
         });
 
         // Transform initial portfolio entry
-        let initialPortfolioData = {
+        const initialPortfolioData = {
           heroImage: null as ContentItem | null,
           backgroundVideo: null as ContentItem | null,
           services: {
@@ -215,10 +348,10 @@ const useContentfulData = () => {
 
         if (initialPortfolioEntry) {
           // Get hero image
-          const images = initialPortfolioEntry.fields.images as any[] | undefined;
-          const videos = initialPortfolioEntry.fields.videos as any[] | undefined;
+          const images = initialPortfolioEntry.fields.images;
+          const videos = initialPortfolioEntry.fields.videos;
           
-          if (images) {
+          if (images && Array.isArray(images) && images.length > 0) {
             const heroImage = images.find((img) => img.sys.id === '7kxPnWB6qFXQSrg4CnLPhN');
             console.log('Hero image found:', heroImage ? 'Yes' : 'No');
             if (heroImage) {
@@ -229,15 +362,38 @@ const useContentfulData = () => {
               initialPortfolioData.heroImage = {
                 category: 'hero',
                 type: 'image' as const,
-                metadata: heroImage.metadata,
+                metadata: {
+                  tags: heroImage.metadata?.tags?.map((tag: { sys: { id: string } }) => ({
+                    sys: {
+                      type: "Link" as const,
+                      linkType: "Tag" as const,
+                      id: tag.sys.id
+                    }
+                  })) || []
+                },
                 sys: {
                   ...heroImage.sys,
-                  locale: heroImage.sys.locale || 'en-US'
+                  type: "Asset" as const,
+                  locale: heroImage.sys.locale || 'en-US',
+                  space: {
+                    sys: {
+                      type: "Link" as const,
+                      linkType: "Space" as const,
+                      id: heroImage.sys.space.sys.id
+                    }
+                  },
+                  environment: {
+                    sys: {
+                      type: "Link" as const,
+                      linkType: "Environment" as const,
+                      id: heroImage.sys.environment.sys.id
+                    }
+                  }
                 },
                 fields: {
                   title: typeof heroImage.fields.title === 'string' ? heroImage.fields.title : '',
                   description: typeof heroImage.fields.description === 'string' ? heroImage.fields.description : '',
-                  technic: typeof initialPortfolioEntry.fields.technic === 'string' ? initialPortfolioEntry.fields.technic : undefined,
+                  technic: typeof (initialPortfolioEntry.fields as { technic?: string }).technic === 'string' ? (initialPortfolioEntry.fields as { technic?: string }).technic : undefined,
                   file: {
                     url: heroImageUrl,
                     contentType: typeof heroImage.fields.file?.contentType === 'string' ? heroImage.fields.file.contentType : '',
@@ -258,17 +414,40 @@ const useContentfulData = () => {
                   : '';
 
                 const serviceItem: ContentItem = {
-                  category: typeof initialPortfolioEntry.fields.title === 'string' ? initialPortfolioEntry.fields.title : '',
+                  category: (initialPortfolioEntry.fields.title || '') as string,
                   type: 'image' as const,
-                  metadata: img.metadata,
+                  metadata: {
+                    tags: img.metadata?.tags?.map((tag: { sys: { id: string } }) => ({
+                      sys: {
+                        type: "Link" as const,
+                        linkType: "Tag" as const,
+                        id: tag.sys.id
+                      }
+                    })) || []
+                  },
                   sys: {
                     ...img.sys,
-                    locale: img.sys.locale || 'en-US'
+                    type: "Asset" as const,
+                    locale: img.sys.locale || 'en-US',
+                    space: {
+                      sys: {
+                        type: "Link" as const,
+                        linkType: "Space" as const,
+                        id: img.sys.space.sys.id
+                      }
+                    },
+                    environment: {
+                      sys: {
+                        type: "Link" as const,
+                        linkType: "Environment" as const,
+                        id: img.sys.environment.sys.id
+                      }
+                    }
                   },
                   fields: {
                     title: typeof img.fields.title === 'string' ? img.fields.title : '',
                     description: typeof img.fields.description === 'string' ? img.fields.description : '',
-                    technic: typeof initialPortfolioEntry.fields.technic === 'string' ? initialPortfolioEntry.fields.technic : undefined,
+                    technic: typeof (initialPortfolioEntry.fields as { technic?: string }).technic === 'string' ? (initialPortfolioEntry.fields as { technic?: string }).technic : undefined,
                     file: {
                       url: serviceItemUrl,
                       contentType: typeof img.fields.file?.contentType === 'string' ? img.fields.file.contentType : '',
@@ -284,7 +463,6 @@ const useContentfulData = () => {
                 const description = img.fields.description?.toString().toLowerCase() || '';
                 const title = img.fields.title?.toString().toLowerCase() || '';
 
-                // Asignar la imagen al servicio correspondiente basado en la categoría
                 if (description.includes('artístico') || title.includes('artístico') || 
                     description.includes('artistico') || title.includes('artistico')) {
                   initialPortfolioData.services.artistic.push(serviceItem);
@@ -300,27 +478,50 @@ const useContentfulData = () => {
               }
             });
 
-            // Asignar las imágenes del carrusel a los servicios si no tienen imágenes
+            // Assign carousel images to services if they have no images
             galleryEntries.forEach(entry => {
-              const entryImages = entry.fields.images as any[] | undefined;
-              if (entryImages && entryImages.length > 0) {
+              const entryImages = entry.fields.images;
+              if (entryImages && Array.isArray(entryImages) && entryImages.length > 0) {
                 entryImages.forEach(img => {
                   const serviceItemUrl = typeof img.fields.file?.url === 'string' 
                     ? formatContentfulUrl(img.fields.file.url)
                     : '';
 
                   const serviceItem: ContentItem = {
-                    category: typeof entry.fields.title === 'string' ? entry.fields.title : '',
+                    category: (entry.fields.title || '') as string,
                     type: 'image' as const,
-                    metadata: img.metadata,
+                    metadata: {
+                      tags: img.metadata?.tags?.map((tag: { sys: { id: string } }) => ({
+                        sys: {
+                          type: "Link" as const,
+                          linkType: "Tag" as const,
+                          id: tag.sys.id
+                        }
+                      })) || []
+                    },
                     sys: {
                       ...img.sys,
-                      locale: img.sys.locale || 'en-US'
+                      type: "Asset" as const,
+                      locale: img.sys.locale || 'en-US',
+                      space: {
+                        sys: {
+                          type: "Link" as const,
+                          linkType: "Space" as const,
+                          id: img.sys.space.sys.id
+                        }
+                      },
+                      environment: {
+                        sys: {
+                          type: "Link" as const,
+                          linkType: "Environment" as const,
+                          id: img.sys.environment.sys.id
+                        }
+                      }
                     },
                     fields: {
                       title: typeof img.fields.title === 'string' ? img.fields.title : '',
                       description: typeof img.fields.description === 'string' ? img.fields.description : '',
-                      technic: typeof entry.fields.technic === 'string' ? entry.fields.technic : undefined,
+                      technic: typeof (entry.fields as { technic?: string }).technic === 'string' ? (entry.fields as { technic?: string }).technic : undefined,
                       file: {
                         url: serviceItemUrl,
                         contentType: typeof img.fields.file?.contentType === 'string' ? img.fields.file.contentType : '',
@@ -332,7 +533,7 @@ const useContentfulData = () => {
                     }
                   };
 
-                  // Asignar la imagen al servicio correspondiente basado en la categoría
+                  // Categorize based on description or title
                   const description = img.fields.description?.toString().toLowerCase() || '';
                   const title = img.fields.title?.toString().toLowerCase() || '';
 
@@ -353,34 +554,57 @@ const useContentfulData = () => {
             });
 
             // Ensure each service has a thumbnail
-            serviceCategories.forEach((category, index) => {
+            serviceCategories.forEach((category) => {
               if (!category.thumbnail) {
-                // Buscar una imagen del servicio correspondiente
+                // Look for an image from the corresponding service
                 const serviceImages = initialPortfolioData.services[category.id as keyof typeof initialPortfolioData.services];
-                if (serviceImages && serviceImages.length > 0) {
+                if (serviceImages && Array.isArray(serviceImages) && serviceImages.length > 0) {
                   category.thumbnail = serviceImages[0];
                 } else if (galleryEntries.length > 0) {
-                  // Si no hay imágenes específicas del servicio, usar la primera imagen del carrusel
+                  // If no service-specific images, use the first carousel image
                   const firstEntry = galleryEntries[0];
-                  const firstEntryImages = firstEntry.fields.images as any[] | undefined;
-                  if (firstEntryImages && firstEntryImages.length > 0) {
+                  const firstEntryImages = firstEntry.fields.images;
+                  if (firstEntryImages && Array.isArray(firstEntryImages) && firstEntryImages.length > 0) {
                     const firstImage = firstEntryImages[0];
                     const firstImageUrl = typeof firstImage.fields.file?.url === 'string' 
                       ? formatContentfulUrl(firstImage.fields.file.url)
                       : '';
 
                     const serviceItem: ContentItem = {
-                      category: typeof firstEntry.fields.title === 'string' ? firstEntry.fields.title : '',
+                      category: (initialPortfolioEntry.fields.title || '') as string,
                       type: 'image' as const,
-                      metadata: firstImage.metadata,
+                      metadata: {
+                        tags: firstImage.metadata?.tags?.map((tag: { sys: { id: string } }) => ({
+                          sys: {
+                            type: "Link" as const,
+                            linkType: "Tag" as const,
+                            id: tag.sys.id
+                          }
+                        })) || []
+                      },
                       sys: {
                         ...firstImage.sys,
-                        locale: firstImage.sys.locale || 'en-US'
+                        type: "Asset" as const,
+                        locale: firstImage.sys.locale || 'en-US',
+                        space: {
+                          sys: {
+                            type: "Link" as const,
+                            linkType: "Space" as const,
+                            id: firstImage.sys.space.sys.id
+                          }
+                        },
+                        environment: {
+                          sys: {
+                            type: "Link" as const,
+                            linkType: "Environment" as const,
+                            id: firstImage.sys.environment.sys.id
+                          }
+                        }
                       },
                       fields: {
                         title: typeof firstImage.fields.title === 'string' ? firstImage.fields.title : '',
                         description: typeof firstImage.fields.description === 'string' ? firstImage.fields.description : '',
-                        technic: typeof firstEntry.fields.technic === 'string' ? firstEntry.fields.technic : undefined,
+                        technic: typeof (firstEntry.fields as { technic?: string }).technic === 'string' ? (firstEntry.fields as { technic?: string }).technic : undefined,
                         file: {
                           url: firstImageUrl,
                           contentType: typeof firstImage.fields.file?.contentType === 'string' ? firstImage.fields.file.contentType : '',
@@ -399,7 +623,7 @@ const useContentfulData = () => {
           }
 
           // Get background video
-          if (videos) {
+          if (videos && Array.isArray(videos) && videos.length > 0) {
             const backgroundVideo = videos.find((vid) => vid.sys.id === '2aGl1kgVmsLz5D4lk0MNJa');
             console.log('Background video found:', backgroundVideo ? 'Yes' : 'No');
             if (backgroundVideo) {
@@ -410,15 +634,38 @@ const useContentfulData = () => {
               initialPortfolioData.backgroundVideo = {
                 category: 'background',
                 type: 'video' as const,
-                metadata: backgroundVideo.metadata,
+                metadata: {
+                  tags: backgroundVideo.metadata?.tags?.map((tag: { sys: { id: string } }) => ({
+                    sys: {
+                      type: "Link" as const,
+                      linkType: "Tag" as const,
+                      id: tag.sys.id
+                    }
+                  })) || []
+                },
                 sys: {
                   ...backgroundVideo.sys,
-                  locale: backgroundVideo.sys.locale || 'en-US'
+                  type: "Asset" as const,
+                  locale: backgroundVideo.sys.locale || 'en-US',
+                  space: {
+                    sys: {
+                      type: "Link" as const,
+                      linkType: "Space" as const,
+                      id: backgroundVideo.sys.space.sys.id
+                    }
+                  },
+                  environment: {
+                    sys: {
+                      type: "Link" as const,
+                      linkType: "Environment" as const,
+                      id: backgroundVideo.sys.environment.sys.id
+                    }
+                  }
                 },
                 fields: {
                   title: typeof backgroundVideo.fields.title === 'string' ? backgroundVideo.fields.title : '',
                   description: typeof backgroundVideo.fields.description === 'string' ? backgroundVideo.fields.description : '',
-                  technic: typeof initialPortfolioEntry.fields.technic === 'string' ? initialPortfolioEntry.fields.technic : undefined,
+                  technic: typeof (initialPortfolioEntry.fields as { technic?: string }).technic === 'string' ? (initialPortfolioEntry.fields as { technic?: string }).technic : undefined,
                   file: {
                     url: backgroundVideoUrl,
                     contentType: typeof backgroundVideo.fields.file?.contentType === 'string' ? backgroundVideo.fields.file.contentType : '',
@@ -436,7 +683,7 @@ const useContentfulData = () => {
         setPortfolioData({
           gallery: galleryData,
           initialPortfolio: initialPortfolioData,
-          serviceCategories: serviceCategories
+          serviceCategories
         });
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Unknown error'));

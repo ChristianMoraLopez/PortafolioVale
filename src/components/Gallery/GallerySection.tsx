@@ -1,25 +1,17 @@
 import React from 'react';
 import Image from 'next/image';
 import useContentfulData from '@/hooks/usePortfolioPictures';
+import { ContentItem } from '@/types/PortfolioContentFulTypes';
 
 const GallerySection = () => {
   const { data, loading, error } = useContentfulData('6quQLXK8Se7CxKz9JLJde5'); 
 
-  console.log('GallerySection Data:', data);
-  console.log('Loading:', loading);
-  console.log('Error:', error);
-
-  if (data) {
-    console.log('Entry:', data.fields);
-  }
-
-  // Manejo de carga y error
   if (loading) return <p>Cargando...</p>;
   if (error) return <p>Error: {JSON.stringify(error)}</p>;
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-      {data?.fields.images.map((image, index) => {
+      {data?.fields?.images?.map((image: ContentItem, index: number) => {
         // Accede a los campos de la imagen directamente
         const imageFields = image.fields;
 

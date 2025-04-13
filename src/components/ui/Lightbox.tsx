@@ -123,13 +123,14 @@ const Lightbox: React.FC<LightboxProps> = ({
             ) : (
               <>
                 {isVideo(filteredData[currentImage].fields?.file?.url || "") ? (
-                  <video
-                    src={`https:${filteredData[currentImage].fields?.file?.url}`}
-                    className="w-full h-full object-contain z-10 pointer-events-none" 
-                    controls
-                    autoPlay
-                    loop
-                  />
+                 <video
+                 src={filteredData[currentImage].fields?.file?.url} // Use normalized URL directly
+                 className="w-full h-full object-contain z-10 pointer-events-auto" // Allow interaction
+                 controls
+                 autoPlay
+                 loop
+                 onError={(e) => console.error('Video playback error:', e)}
+               />
                 ) : (
                   <Image
                     src={`https:${filteredData[currentImage].fields?.file?.url}`}
