@@ -55,7 +55,7 @@ const HomePage: React.FC = () => {
     ...settings,
     vertical: true,
     slidesToShow: 4,
-    focusOnSelect: true,
+    focusOnSelect: false,
     adaptiveHeight: false,
     verticalSwiping: true,
     swipeToSlide: true,
