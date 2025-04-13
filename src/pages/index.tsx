@@ -30,6 +30,42 @@ const HomePage: React.FC = () => {
     threshold: 0.1
   });
 
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    afterChange: (current: number) => setCurrentSlide(current),
+    adaptiveHeight: false,
+    vertical: false,
+    verticalSwiping: false,
+    swipeToSlide: true,
+    focusOnSelect: false,
+    centerMode: false,
+    centerPadding: "0px",
+    arrows: true,
+    prevArrow: <button className="slick-prev">Previous</button>,
+    nextArrow: <button className="slick-next">Next</button>,
+    cssEase: "linear",
+    waitForAnimate: true,
+    useTransform: false,
+  };
+
+  const thumbnailSettings = {
+    ...settings,
+    vertical: true,
+    slidesToShow: 4,
+    focusOnSelect: true,
+    adaptiveHeight: false,
+    verticalSwiping: true,
+    swipeToSlide: true,
+    arrows: false,
+    cssEase: "linear",
+    waitForAnimate: true,
+    useTransform: false,
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % services.length);
@@ -39,15 +75,15 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     if (mainSliderRef.current && thumbnailSliderRef.current) {
-      mainSliderRef.current.slickGoTo(currentSlide);
-      thumbnailSliderRef.current.slickGoTo(currentSlide);
+      mainSliderRef.current.slickGoTo(currentSlide, false);
+      thumbnailSliderRef.current.slickGoTo(currentSlide, false);
     }
   }, [currentSlide]);
 
   useEffect(() => {
     if (mainSliderRef.current && thumbnailSliderRef.current) {
-      thumbnailSliderRef.current.slickGoTo(0);
-      mainSliderRef.current.slickGoTo(0);
+      mainSliderRef.current.slickGoTo(0, false);
+      thumbnailSliderRef.current.slickGoTo(0, false);
     }
   }, []);
 
@@ -152,7 +188,7 @@ const HomePage: React.FC = () => {
                     src={portfolioData.initialPortfolio.heroImage.fields.file.url}
                     alt={portfolioData.initialPortfolio.heroImage.fields.title}
                     fill
-                    className="object-cover"
+                    className="object-cover object-[center_top]"
                     priority
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
