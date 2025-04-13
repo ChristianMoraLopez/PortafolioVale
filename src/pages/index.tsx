@@ -15,7 +15,6 @@ const HomePage: React.FC = () => {
   const router = useRouter();
   const { theme } = useTheme();
   const { portfolioData, loading, error } = useContentfulData();
-  const [currentServiceIndex, setCurrentServiceIndex] = useState(0);
   const services = [
     { name: "Maquillaje Artístico", key: "artistic" },
     { name: "Maquillaje Social", key: "social" },
@@ -25,36 +24,18 @@ const HomePage: React.FC = () => {
 
   const mainSliderRef = useRef<Slider>(null);
   const thumbnailSliderRef = useRef<Slider>(null);
-
   const [currentSlide, setCurrentSlide] = useState(0);
-
-  const settings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    afterChange: (current: number) => setCurrentSlide(current),
-  };
-
-  const thumbnailSettings = {
-    ...settings,
-    vertical: true,
-    slidesToShow: 4,
-    focusOnSelect: true,
-  };
-
-  const [ref, inView] = useInView({
+  const [ref] = useInView({
     triggerOnce: true,
     threshold: 0.1
   });
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentServiceIndex((prev) => (prev + 1) % services.length);
+      setCurrentSlide((prev) => (prev + 1) % services.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [services.length]);
 
   useEffect(() => {
     if (mainSliderRef.current && thumbnailSliderRef.current) {
@@ -166,12 +147,12 @@ const HomePage: React.FC = () => {
                 transition={{ duration: 0.8, delay: 0.3 }}
                 whileHover={{ scale: 1.02 }}
               >
-                <div className="relative w-full h-[600px] mx-auto overflow-hidden rounded-lg">
+                <div className="relative w-[400px] h-[400px] mx-auto overflow-hidden rounded-full border-4 border-gray-800 shadow-2xl">
                   <Image
                     src={portfolioData.initialPortfolio.heroImage.fields.file.url}
                     alt={portfolioData.initialPortfolio.heroImage.fields.title}
                     fill
-                    className="object-contain"
+                    className="object-cover"
                     priority
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />

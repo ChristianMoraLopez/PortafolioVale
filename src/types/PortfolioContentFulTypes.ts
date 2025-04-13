@@ -108,52 +108,29 @@ export type ParagraphContent = {
 };
 
 // Define ContentfulData tipo
-export type ContentfulData = {
-  metadata: {
-    tags: string[];
-  };
-  sys: {
-    space: {
-      sys: {
-        type: 'Link';
-        linkType: 'Space';
-        id: string;
-      };
-    };
-    id: string;
-    type: 'Entry';
-    createdAt: string;
-    updatedAt: string;
-    environment: {
-      sys: {
-        id: string;
-        type: 'Link';
-        linkType: 'Environment';
-      };
-    };
-    revision: number;
-    contentType: {
-      sys: {
-        type: 'Link';
-        linkType: 'ContentType';
-        id: string;
-      };
-    };
-    locale: string;
-  };
-  fields: {
+export interface ContentfulData {
+  initialPortfolio: {
+    heroImage: ContentItem | null;
+    backgroundVideo: ContentItem | null;
     title: string;
-    images: ExtendedAsset[];
-    description: {
-      data: unknown;
-      content: ParagraphContent[];
-      nodeType: 'document';
-    };
-    date: string;
-    client: string;
-    servicesProvided: string;
-    videos: ExtendedAsset[];
-    location: string;
+    description: string;
     technic: string;
+    images: ContentItem[];
+    videos: ContentItem[];
   };
-};
+  gallery: ContentItem[];
+  serviceCategories: ServiceCategory[];
+  services: {
+    artistic: ContentItem[];
+    social: ContentItem[];
+    bodypaint: ContentItem[];
+    editorial: ContentItem[];
+  };
+}
+
+export interface ServiceCategory {
+  id: string;
+  title: string;
+  description: string;
+  thumbnail: ContentItem | null;
+}

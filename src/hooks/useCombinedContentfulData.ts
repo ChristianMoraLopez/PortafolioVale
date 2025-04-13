@@ -35,19 +35,22 @@ interface PortfolioData {
 }
 
 const useContentfulData = () => {
-  const [portfolioData, setPortfolioData] = useState<PortfolioData>({
-    gallery: [],
-    initialPortfolio: {
-      heroImage: null,
-      backgroundVideo: null,
-      services: {
-        artistic: [],
-        social: [],
-        bodypaint: [],
-        editorial: []
-      }
-    },
-    serviceCategories: []
+  const [portfolioData, setPortfolioData] = useState<PortfolioData>(() => {
+    const initialPortfolioData: PortfolioData = {
+      gallery: [],
+      initialPortfolio: {
+        heroImage: null,
+        backgroundVideo: null,
+        services: {
+          artistic: [],
+          social: [],
+          bodypaint: [],
+          editorial: []
+        }
+      },
+      serviceCategories: []
+    };
+    return initialPortfolioData;
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
