@@ -252,7 +252,7 @@ const HomePage: React.FC = () => {
               >
                 <button 
                   className="bg-gray-800 text-white px-10 py-4 rounded-full hover:bg-gray-700 transition-colors text-xl font-bold shadow-lg hover:shadow-xl"
-                  onClick={() => router.push('/portfolio')}
+                  onClick={() => router.push('/gallery')}
                 >
                   Ver Portafolio
                 </button>
