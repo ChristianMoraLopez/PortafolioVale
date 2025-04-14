@@ -86,6 +86,92 @@ const HomePage: React.FC = () => {
     }
   }, []);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.3
+      }
+    }
+  };
+
+  const textVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    },
+    hover: {
+      scale: 1.02,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 10
+      }
+    }
+  };
+
+  const buttonVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    },
+    hover: {
+      scale: 1.05,
+      y: -2,
+      boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.3)",
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 10
+      }
+    },
+    tap: {
+      scale: 0.95,
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 10
+      }
+    }
+  };
+
+  const imageVariants = {
+    hidden: { opacity: 0, scale: 0.8, rotate: -5 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      rotate: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    },
+    hover: {
+      scale: 1.02,
+      rotate: 2,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 10
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -107,10 +193,10 @@ const HomePage: React.FC = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 md:pt-24">
         {/* Background Video */}
         {portfolioData.initialPortfolio.backgroundVideo && (
-          <motion.div 
+          <motion.div
             className="absolute inset-0 z-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -134,40 +220,40 @@ const HomePage: React.FC = () => {
           </motion.div>
         )}
 
-        <div className="container mx-auto px-4 z-10">
-          <div className="flex flex-col md:flex-row items-center gap-8">
+        <div className="container mx-auto px-4 z-10 mt-16 md:mt-24">
+          <motion.div 
+            className="flex flex-col md:flex-row items-center gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
             {/* Text Content - Left Side */}
-            <motion.div 
-              className="md:w-2/3 text-center md:text-left"
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+            <motion.div
+              className="md:w-2/3 text-center md:text-left mt-8 md:mt-0"
+              variants={textVariants}
             >
-              <motion.h1 
+              <motion.h1
                 className="text-4xl md:text-6xl font-bold mb-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                whileHover={{ scale: 1.02 }}
+                variants={textVariants}
+                whileHover="hover"
               >
                 Transformando Belleza en Arte
               </motion.h1>
-              <motion.p 
+              <motion.p
                 className="text-lg md:text-xl mb-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
+                variants={textVariants}
               >
                 Maquillaje profesional que realza tu belleza natural y cuenta tu historia única.
               </motion.p>
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
               >
-                <button className="bg-gray-800 text-white px-10 py-4 rounded-full hover:bg-gray-700 transition-colors text-xl font-bold shadow-lg hover:shadow-xl">
+                <button 
+                  className="bg-gray-800 text-white px-10 py-4 rounded-full hover:bg-gray-700 transition-colors text-xl font-bold shadow-lg hover:shadow-xl"
+                  onClick={() => router.push('/portfolio')}
+                >
                   Ver Portafolio
                 </button>
               </motion.div>
@@ -175,14 +261,12 @@ const HomePage: React.FC = () => {
 
             {/* Hero Image - Right Side */}
             {portfolioData.initialPortfolio.heroImage && (
-              <motion.div 
-                className="md:w-1/2"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                whileHover={{ scale: 1.02 }}
+              <motion.div
+                className="md:w-1/2 mt-8 md:mt-0"
+                variants={imageVariants}
+                whileHover="hover"
               >
-                <div className="relative w-[400px] h-[400px] mx-auto overflow-hidden rounded-full border-4 border-gray-800 shadow-2xl">
+                <div className="relative w-[300px] md:w-[400px] h-[300px] md:h-[400px] mx-auto overflow-hidden rounded-full border-4 border-gray-800 shadow-2xl">
                   <Image
                     src={portfolioData.initialPortfolio.heroImage.fields.file.url}
                     alt={portfolioData.initialPortfolio.heroImage.fields.title}
@@ -194,7 +278,7 @@ const HomePage: React.FC = () => {
                 </div>
               </motion.div>
             )}
-          </div>
+          </motion.div>
         </div>
       </section>
 
