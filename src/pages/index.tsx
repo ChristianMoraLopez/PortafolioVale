@@ -232,19 +232,62 @@ const HomePage: React.FC = () => {
               className="md:w-2/3 text-center md:text-left mt-8 md:mt-0"
               variants={textVariants}
             >
-              <motion.h1
+                 <motion.h1
                 className="text-4xl md:text-6xl font-bold mb-6"
                 variants={textVariants}
                 whileHover="hover"
               >
                 Transformando Belleza en Arte
               </motion.h1>
-              <motion.p
-                className="text-lg md:text-xl mb-8"
-                variants={textVariants}
-              >
-                Maquillaje profesional que realza tu belleza natural y cuenta tu historia única.
-              </motion.p>
+<motion.div
+  className="space-y-6 text-lg md:text-xl mb-8"
+  variants={textVariants}
+>
+  <motion.p 
+    className="text-xl md:text-2xl font-medium text-gray-100"
+    variants={textVariants}
+  >
+    Hola! Soy <span className="text-pink-300 font-bold">Valentina Gómez</span>, 
+    maquilladora profesional artística.
+  </motion.p>
+  
+  <motion.p 
+    className="text-lg md:text-xl leading-relaxed"
+    variants={textVariants}
+  >
+    Transformo tu belleza en arte, combinando creatividad, técnica y una visión única 
+    que resalta lo mejor de ti.
+  </motion.p>
+  
+  <motion.p 
+    className="text-base md:text-lg text-gray-200"
+    variants={textVariants}
+  >
+    Ya sea para una producción, una sesión de fotos, un evento especial o una 
+    transformación completa, mi objetivo es que vivas una experiencia inolvidable 
+    desde el primer pincelazo.
+  </motion.p>
+  
+  <motion.blockquote 
+    className="border-l-4 border-pink-400 pl-6 py-4 bg-black/20 rounded-r-lg"
+    variants={textVariants}
+  >
+    <p className="text-lg md:text-xl italic text-pink-200">
+      "Con cada maquillaje creo algo más que un look: creo impacto, estilo y emoción.
+      Porque cuando el arte se encuentra con la piel, nace la magia."
+    </p>
+  </motion.blockquote>
+  
+  <motion.p 
+    className="text-sm md:text-base text-gray-300"
+    variants={textVariants}
+  >
+    Me formé en LCI Bogotá, y he participado en pasarelas, eventos sociales y 
+    sesiones fotográficas, donde he tenido la oportunidad de crear diseños propios 
+    que reflejan mi sello artístico y profesional.
+  </motion.p>
+</motion.div>
+
               <motion.div
                 variants={buttonVariants}
                 whileHover="hover"
