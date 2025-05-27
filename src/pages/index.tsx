@@ -273,8 +273,8 @@ const HomePage: React.FC = () => {
     variants={textVariants}
   >
     <p className="text-lg md:text-xl italic text-pink-200">
-      "Con cada maquillaje creo algo más que un look: creo impacto, estilo y emoción.
-      Porque cuando el arte se encuentra con la piel, nace la magia."
+      &ldquo;on cada maquillaje creo algo más que un look: creo impacto, estilo y emoción.
+      Porque cuando el arte se encuentra con la piel, nace la magia.&ldquo;
     </p>
   </motion.blockquote>
   
